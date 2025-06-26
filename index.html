@@ -408,61 +408,7 @@
         messages.appendChild(errorMsg);
       }
       }
-      const BACKEND_URL = "https://chatbot-4-rlj1.onrender.com";
-
- BACKEND_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ message: "Bonjour" })
-}
-     
-
-
-
-  async function sendMessage() {
-    const message = document.getElementById("message").value;
-    const responseDiv = document.getElementById("response");
-    const typingIndicator = document.getElementById("typing");
-
-    if (!message.trim()) return;
-
-    responseDiv.innerHTML = "";
-    typingIndicator.style.display = "block";
-
-    try {
-      const res = await fetch(BACKEND_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ message }),
-      });
-
-      const data = await res.json();
-      typingIndicator.style.display = "none";
-
-      if (data.response) {
-        responseDiv.innerHTML = `<strong>Réponse :</strong><br>${data.response}`;
-      } else {
-        responseDiv.innerHTML = `<strong>Erreur :</strong><br>${data.error || "Une erreur s'est produite."}`;
-      }
-    } catch (error) {
-      typingIndicator.style.display = "none";
-      responseDiv.innerHTML = `<strong>Erreur :</strong><br>Impossible de se connecter au serveur.`;
-    }
-  }
-
-  // Envoi avec Entrée
-  document.getElementById("message").addEventListener("keydown", function (e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-
+      
   </script>
   
   
