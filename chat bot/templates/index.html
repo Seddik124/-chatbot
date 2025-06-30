@@ -1,0 +1,420 @@
+<!--<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Infirmier</title>
+</head>
+<body>
+  <h1>Bienvenue Ibtihel</h1>
+  <textarea id="message" rows="4" cols="50" placeholder="Pose ta question ici..."></textarea><br>
+  <button onclick="sendMessage()">Envoyer</button>
+  <div id="response" style="margin-top: 20px;"></div>
+
+  <script>
+    async function sendMessage() {
+      const message = document.getElementById("message").value;
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+      const data = await res.json();
+      document.getElementById("response").innerText = data.response || data.error || "Erreur.";
+    }
+  </script>
+</body>
+</html>
+-->
+
+
+
+<!--
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infirmier Virtuel - Assistance Médicale</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Roboto:wght@300;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4a6fa5;
+      --secondary: #166088;
+      --accent: #4fc3f7;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --success: #28a745;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--dark);
+    }
+    
+    .container {
+      width: 90%;
+      max-width: 800px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin: 2rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+    }
+    
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--secondary);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 600;
+      position: relative;
+    }
+    
+    h1::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: var(--accent);
+      margin: 0.5rem auto;
+      border-radius: 2px;
+    }
+    
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 1rem;
+      resize: none;
+      transition: all 0.3s ease;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+    }
+    
+    button {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      align-self: flex-end;
+      box-shadow: var(--shadow);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    #response {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      border-left: 4px solid var(--accent);
+      white-space: pre-wrap;
+      animation: fadeIn 0.5s ease;
+      min-height: 100px;
+    }
+    
+    .typing-indicator {
+      display: none;
+      color: var(--secondary);
+      font-style: italic;
+      margin-top: 1rem;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 1.5rem;
+      }
+      
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>hello my love  </h1>
+    <div class="chat-container">
+      <textarea id="message" rows="5" placeholder="Pose ta question médicale ici..."></textarea>
+      <button onclick="sendMessage()">Envoyer</button>
+      <div class="typing-indicator" id="typing">L'infirmier virtuel rédige une réponse...</div>
+      <div id="response"></div>
+    </div>
+  </div>
+
+  <script>
+    async function sendMessage() {
+      const message = document.getElementById("message").value;
+      const responseDiv = document.getElementById("response");
+      const typingIndicator = document.getElementById("typing");
+      
+      if (!message.trim()) return;
+      
+      // Show typing indicator
+      responseDiv.innerHTML = "";
+      typingIndicator.style.display = "block";
+      
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+        
+        const data = await res.json();
+        typingIndicator.style.display = "none";
+        
+        if (data.response) {
+          responseDiv.innerHTML = `<strong>Réponse :</strong><br>${data.response}`;
+        } else {
+          responseDiv.innerHTML = `<strong>Erreur :</strong><br>${data.error || "Une erreur s'est produite."}`;
+        }
+      } catch (error) {
+        typingIndicator.style.display = "none";
+        responseDiv.innerHTML = `<strong>Erreur :</strong><br>Impossible de se connecter au serveur.`;
+      }
+    }
+    
+    // Allow sending message with Enter key (Shift+Enter for new line)
+    document.getElementById("message").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
+-->
+
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infirmier Virtuel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(145deg, #fdf2f8, #fce7f3);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .chat-box {
+      background-color: white;
+      width: 100%;
+      max-width: 500px;
+      height: 80vh;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .header {
+      background: linear-gradient(90deg, #ec4899, #f43f5e);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 0.75rem 1rem;
+      border-radius: 16px;
+      line-height: 1.4;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      animation: fadeIn 0.4s ease-in;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background-color: #fce7f3;
+    }
+
+    .user {
+      align-self: flex-end;
+      background-color: #ec4899;
+      color: white;
+    }
+
+    .input-area {
+      display: flex;
+      padding: 1rem;
+      gap: 0.5rem;
+      border-top: 1px solid #eee;
+      background: #fff;
+    }
+
+    textarea {
+      flex: 1;
+      padding: 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: none;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #ec4899;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #db2777;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-box">
+    <div class="header">Infirmier Virtuel</div>
+    <div class="messages" id="messages">
+      
+    </div>
+    <div class="input-area">
+      <textarea id="message" rows="2" placeholder="Pose ta question..."></textarea>
+      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  <script>
+ 
+
+    async function sendMessage() {
+      const input = document.getElementById("message");
+      const messages = document.getElementById("messages");
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      const userMsg = document.createElement("div");
+      userMsg.className = "message user";
+      userMsg.textContent = msg;
+      messages.appendChild(userMsg);
+      input.value = "";
+      messages.scrollTop = messages.scrollHeight;
+
+      const botTyping = document.createElement("div");
+      botTyping.className = "message bot";
+      botTyping.textContent = "...";
+      messages.appendChild(botTyping);
+      messages.scrollTop = messages.scrollHeight;
+
+      try {
+        const res = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+
+        const data = await res.json();
+        botTyping.remove();
+
+        const botMsg = document.createElement("div");
+        botMsg.className = "message bot";
+        botMsg.textContent = data.response || "Erreur de réponse";
+        messages.appendChild(botMsg);
+        messages.scrollTop = messages.scrollHeight;
+      } catch (e) {
+        botTyping.remove();
+        const errorMsg = document.createElement("div");
+        errorMsg.className = "message bot";
+        errorMsg.textContent = "Erreur de connexion au serveur.";
+        messages.appendChild(errorMsg);
+      }
+      }
+      
+  </script>
+  
+  
+</body>
+</html>
+
+
+
+
