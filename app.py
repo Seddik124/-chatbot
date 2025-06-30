@@ -1,41 +1,12 @@
 
-from flask import Flask, request, jsonify, render_template
-from flask_cors import CORS
-import os
-
-app = Flask(__name__)
-CORS(app)
-
-@app.route("/")
-def home():
-    return render_template("index.html")
-
-@app.route("/chat", methods=["POST"])
-def chat():
-    user_message = request.json.get("message")
-
-    if not user_message:
-        return jsonify({"error": "Message vide"}), 400
-
-    try:
-        # Simulation de réponse (à la place de localhost:11434)
-        response_text = f"Infirmier Virtuel vous répond : {user_message}"
-        return jsonify({"response": response_text})
-        
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Compatible avec Render
-    app.run(host="0.0.0.0", port=port)
 
 
-
-
-"""
 from flask import Flask, request, jsonify, render_template
 import requests
 from flask_cors import CORS
+
+import os
+print("Current working directory:", os.getcwd())
 
 app = Flask(__name__)
 CORS(app)
@@ -65,9 +36,7 @@ def chat():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)"""
-     
-
+    app.run(debug=True, host="0.0.0.0", port=10000)
 
 
 
